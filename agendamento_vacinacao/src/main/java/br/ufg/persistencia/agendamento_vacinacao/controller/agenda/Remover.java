@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import javax.persistence.EntityManager;
-import javax.swing.text.html.parser.Entity;
 import java.io.IOException;
 
 @WebServlet("/remover")

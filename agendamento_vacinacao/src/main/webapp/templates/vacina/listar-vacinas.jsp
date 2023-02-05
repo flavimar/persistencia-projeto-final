@@ -1,11 +1,14 @@
-<%@ page import="java.text.DateFormat" %>
-<%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="java.util.List" %>
-<%@ page import="br.ufg.persistencia.agendamento_vacinacao.model.Agenda" %>
+<%@ page import="br.ufg.persistencia.agendamento_vacinacao.model.Vacina" %>
+<%@ page import="java.util.List" %><%--
+  Created by IntelliJ IDEA.
+  User: flavi
+  Date: 02/02/2023
+  Time: 21:17
+  To change this template use File | Settings | File Templates.
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    List<Agenda> agendas = (List<Agenda>) request.getAttribute("lista");
-    DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+    List<Vacina> vacinas = (List<Vacina>) request.getAttribute("lista");
     int cout = 1;
 %>
 <html>
@@ -26,35 +29,41 @@
         <button class="btn btn-primary">Cadastrar</button>
     </a>
     <%=request.getAttribute("ms") != null?"<h2 class='text-danger'>"+request.getAttribute("ms")+"</h2":""%>
-    <h1>Listagem de Agendamento</h1>
+    <%if(vacinas.size() > 0){%>
+    <h1>Listagem de Vacinas</h1>
     <table class="table table-striped">
         <thead class="text-center">
         <tr>
             <th scope="col">#</th>
-            <th scope="col">Data</th>
-            <th scope="col">Hora</th>
-            <th scope="col">Situação</th>
-            <th scope="col">data da Situação</th>
-            <th scope="col">Observações</th>
+            <th scope="col">Titulo</th>
+            <th scope="col">Doses</th>
+            <th scope="col">Periodiciade</th>
+            <th scope="col">Intervalo</th>
+            <th scope="col">Descrição</th>
             <th scope="col">excluir</th>
             <th scope="col">editar</th>
         </tr>
         </thead>
         <tbody class="text-center">
-        <% for(Agenda agenda : agendas) { %>
+        <% for(Vacina vacina : vacinas) { %>
         <tr>
             <th scope="row"><%=cout++ %></th>
-            <td><%=agenda.getData() != null?formatter.format(agenda.getData()): "-"%></td>
-            <td><%=agenda.getHora() != null? agenda.getHora(): "-"%></td>
-            <td><%=agenda.getSituacao()%></td>
-            <td><%=agenda.getDataSituacao() != null?formatter.format(agenda.getDataSituacao()):"-"%></td>
-            <td><%=agenda.getObservacao()%></td>
-            <td> <a href="remover?id=<%=agenda.getId()%>"><i class="bi bi-trash"></i> </a> </td>
-            <td> <a href="atualizar?id=<%=agenda.getId()%>"> <i class="bi bi-pencil-square"></i> </a> </td>
+            <td><%=vacina.getTitulo()%></td>
+            <td><%=vacina.getDoses()%></td>
+            <td><%=vacina.getPeriodicidade()%></td>
+            <td><%=vacina.getIntervalo()%></td>
+            <td><%=vacina.getDescricao()%></td>
+            <td> <a href="remover?id=<%=vacina.getId()%>"><i class="bi bi-trash"></i> </a> </td>
+            <td> <a href="atualizar?id=<%=vacina.getId()%>"> <i class="bi bi-pencil-square"></i> </a> </td>
         </tr>
         <% } %>
         </tbody>
     </table>
+    <%}else{%>
+    <div class="center">
+        <h1>Não há itens</h1>
+    </div>
+    <%}%>
 </div>
 
 </body>

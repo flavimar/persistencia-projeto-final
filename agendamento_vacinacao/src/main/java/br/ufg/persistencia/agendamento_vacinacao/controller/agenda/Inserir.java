@@ -10,7 +10,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.SneakyThrows;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
@@ -47,7 +46,7 @@ public class Inserir extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        RequestDispatcher rd = request.getRequestDispatcher("/cadastrar-agenda.html");
+        RequestDispatcher rd = request.getRequestDispatcher("/cadastrar-agenda.jsp");
         rd.forward(request, response);
     }
 }

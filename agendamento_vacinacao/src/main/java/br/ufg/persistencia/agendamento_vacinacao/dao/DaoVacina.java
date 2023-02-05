@@ -1,44 +1,46 @@
 package br.ufg.persistencia.agendamento_vacinacao.dao;
 
 import br.ufg.persistencia.agendamento_vacinacao.model.Agenda;
+import br.ufg.persistencia.agendamento_vacinacao.model.Vacina;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 
-public class DaoAgenda {
+public class DaoVacina {
     private EntityManager entityManager;
-    public DaoAgenda(EntityManager entityManager){
+
+    public DaoVacina(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
-    public void create(Agenda user){
+    public void create(Vacina vacina){
         entityManager.getTransaction().begin();
-        entityManager.persist(user);
-        entityManager.getTransaction().commit();
-
-    }
-    public List<Agenda> findAll(){
-        entityManager.getTransaction().begin();
-        List<Agenda> users = entityManager.createQuery("select u from Agenda as u").getResultList();
+        entityManager.persist(vacina);
         entityManager.getTransaction().commit();
         entityManager.close();
-        return users;
     }
-    public Agenda findById(long id){
+    public List<Vacina> findAll(){
         entityManager.getTransaction().begin();
-        Agenda agenda = entityManager.find(Agenda.class,id);
+        List<Vacina> vacinas = entityManager.createQuery("select u from Vacina as u").getResultList();
         entityManager.getTransaction().commit();
-        return agenda;
+        entityManager.close();
+        return vacinas;
     }
-    public void delete(Agenda user){
-        Agenda deleteUser = entityManager.find(Agenda.class,user.getId());
+    public Vacina findById(long id){
         entityManager.getTransaction().begin();
-        entityManager.remove(deleteUser);
+        Vacina vacina = entityManager.find(Vacina.class,id);
+        entityManager.getTransaction().commit();
+        return vacina;
+    }
+    public void delete(Vacina vacina){
+        Vacina vac = entityManager.find(Vacina.class,vacina.getId());
+        entityManager.getTransaction().begin();
+        entityManager.remove(vac);
         entityManager.getTransaction().commit();
     }
-    public Agenda update(Agenda user){
+    public Vacina update(Vacina vacina){
         entityManager.getTransaction().begin();
-        Agenda user1 = entityManager.merge(user);
+        Vacina vac = entityManager.merge(vacina);
         entityManager.getTransaction().commit();
-        return user1;
+        return vac;
     }
 }

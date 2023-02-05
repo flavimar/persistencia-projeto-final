@@ -1,3 +1,16 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: flavi
+  Date: 02/02/2023
+  Time: 23:20
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="br.ufg.persistencia.agendamento_vacinacao.model.Vacina" %>
+<%@ page import="java.util.List" %>
+<%
+    List<Vacina> vacinas = (List<Vacina>) request.getAttribute("vacinas");
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +21,7 @@
 </head>
 <body>
 <div class="container">
-    <a href="../../index.jsp">
+    <a href="../index.jsp">
         <button class="btn btn-primary">
             <i class="bi bi-chevron-left"></i>
             <span>Voltar</span>
@@ -18,30 +31,37 @@
     <div class="card">
         <div class="card-body">
             <form method="post" action="inserir" class="row g-3">
-                <div class="col-md-3">
-                    <label for="data" class="form-label">Data</label>
-                    <input type="date" name="data" class="form-control" id="data" placeholder="dd/mm/aaaa" >
-                </div>
-                <div class="col-md-3">
-                    <label for="hora" class="form-label">Data de nascimento</label>
-                    <input type="time" name="hora" class="form-control" id="hora">
-                </div>
-                <div class="col-md-3">
+                <div class="col-md-6">
                     <label for="situacao" class="form-label">Situação</label>
-                    <select class="form-select" name="situacao" id="situacao" aria-label="Default select example">
+                    <select class="form-select" name="situacao" id="situacao" aria-label="Default select example" required>
                         <option selected>Situacao</option>
                         <option value="AGENDADO">Agendado</option>
                         <option value="CANCELADO">Cancelado</option>
                         <option value="REALIZADO">Realizado</option>
                     </select>
                 </div>
-                <div class="col-md-3">
-                    <label for="dataSituacao" class="form-label">Data da Situação</label>
-                    <input type="date" name="dataSituacao" class="form-control" id="dataSituacao" placeholder="dd/mm/aaaa" >
+                <div class="col-md-6"></div>
+                <div class="col-md-6">
+                    <label for="data" class="form-label">Data</label>
+                    <input type="date" name="data" class="form-control" id="data" placeholder="dd/mm/aaaa" >
                 </div>
+                <div class="col-md-6">
+                    <label for="hora" class="form-label">Hora</label>
+                    <input type="time" name="hora" class="form-control" id="hora">
+                </div>
+
                 <div class="col-md-12">
                     <label for="obs" class="form-label">Observações</label>
                     <textarea class="form-control" name="obs" id="obs" rows="3"></textarea>
+                </div>
+                <div class="col-md-6">
+                    <label for="vacina" class="form-label">Vacina</label>
+                    <select class="form-select" name="vacina" id="vacina" aria-label="Default select example" required>
+                        <option selected>Selecione</option>
+                        <%for(Vacina vacina : vacinas){%>
+                        <option value="<%=vacina.getId()%>"><%=vacina.getTitulo()%></option>
+                        <%}%>
+                    </select>
                 </div>
                 <div class="col-md-12">
                     <button type="submit" class="btn btn-primary">Cadastrar</button>

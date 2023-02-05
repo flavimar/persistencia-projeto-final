@@ -9,5 +9,6 @@
 </h1>
 <br/>
 <a href="agenda/listar">Listar agenda</a>
+<a href="vacina/listar">Listar vacina</a>
 </body>
 </html>
