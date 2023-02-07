@@ -2,9 +2,12 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.List" %>
 <%@ page import="br.ufg.persistencia.agendamento_vacinacao.model.Agenda" %>
+<%@ page import="br.ufg.persistencia.agendamento_vacinacao.model.TipoSituacao" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     List<Agenda> agendas = (List<Agenda>) request.getAttribute("lista");
+    TipoSituacao tipoSituacao = (TipoSituacao)request.getAttribute("filtro");
+    System.out.println(tipoSituacao);
     DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
     int cout = 1;
 %>
@@ -27,6 +30,20 @@
     </a>
     <%=request.getAttribute("ms") != null?"<h2 class='text-danger'>"+request.getAttribute("ms")+"</h2":""%>
     <h1>Listagem de Agendamento</h1>
+    <div class="row">
+        <form method="get" action="listar" class="row g-3">
+        <div class="col-md-4">
+            <select class="form-select" name="filtro" id="filtro" aria-label="Default select example">
+                <option value="" selected>Todas</option>
+                <option <%=tipoSituacao != null && tipoSituacao.equals(TipoSituacao.CANCELADO)? "selected" : null %>  value="CANCELADO">Canceladas</option>
+                <option <%=tipoSituacao != null && tipoSituacao.equals(TipoSituacao.REALIZADO)? "selected" : null %>  value="REALIZADO">Realizadas</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <input class="btn btn-danger" type="submit" value="filtrar">
+        </div>
+    </form>
+    </div>
     <table class="table table-striped">
         <thead class="text-center">
         <tr>
@@ -48,7 +65,7 @@
             <td><%=agenda.getHora() != null? agenda.getHora(): "-"%></td>
             <td><%=agenda.getSituacao()%></td>
             <td><%=agenda.getDataSituacao() != null?formatter.format(agenda.getDataSituacao()):"-"%></td>
-            <td><%=agenda.getObservacao()%></td>
+            <td><%=agenda.getObservacao() != null? agenda.getObservacao():"-"%></td>
             <td> <a href="remover?id=<%=agenda.getId()%>"><i class="bi bi-trash"></i> </a> </td>
             <td> <a href="atualizar?id=<%=agenda.getId()%>"> <i class="bi bi-pencil-square"></i> </a> </td>
         </tr>

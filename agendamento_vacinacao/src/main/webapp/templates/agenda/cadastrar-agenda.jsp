@@ -33,14 +33,22 @@
             <form method="post" action="inserir" class="row g-3">
                 <div class="col-md-6">
                     <label for="situacao" class="form-label">Situação</label>
-                    <select class="form-select" name="situacao" id="situacao" aria-label="Default select example" required>
-                        <option selected>Situacao</option>
+                    <select class="form-select" onchange="test()" name="situacao" id="situacao" aria-label="Default select example" required>
+                        <option selected>Selecione</option>
                         <option value="AGENDADO">Agendado</option>
                         <option value="CANCELADO">Cancelado</option>
                         <option value="REALIZADO">Realizado</option>
                     </select>
                 </div>
-                <div class="col-md-6"></div>
+                <div class="col-md-6">
+                    <label for="vacina" class="form-label">Vacina</label>
+                    <select class="form-select" name="vacina" id="vacina" aria-label="Default select example" required>
+                        <option selected>Selecione</option>
+                        <%for(Vacina vacina : vacinas){%>
+                        <option value="<%=vacina.getId()%>"><%=vacina.getTitulo()%></option>
+                        <%}%>
+                    </select>
+                </div>
                 <div class="col-md-6">
                     <label for="data" class="form-label">Data</label>
                     <input type="date" name="data" class="form-control" id="data" placeholder="dd/mm/aaaa" >
@@ -54,15 +62,6 @@
                     <label for="obs" class="form-label">Observações</label>
                     <textarea class="form-control" name="obs" id="obs" rows="3"></textarea>
                 </div>
-                <div class="col-md-6">
-                    <label for="vacina" class="form-label">Vacina</label>
-                    <select class="form-select" name="vacina" id="vacina" aria-label="Default select example" required>
-                        <option selected>Selecione</option>
-                        <%for(Vacina vacina : vacinas){%>
-                        <option value="<%=vacina.getId()%>"><%=vacina.getTitulo()%></option>
-                        <%}%>
-                    </select>
-                </div>
                 <div class="col-md-12">
                     <button type="submit" class="btn btn-primary">Cadastrar</button>
                 </div>
@@ -71,4 +70,24 @@
     </div>
 </div>
 </body>
+<script>
+    function test(){
+        var hora = document.querySelector("#hora");
+        var data = document.querySelector("#data");
+        //var vacina = document.querySelector("#vacina");
+        p = document.getElementById("situacao").value;
+        console.log(p)
+        if(p !== 'AGENDADO' && p !== 'Selecione'){
+            hora.disabled = true;
+            data.disabled = true;
+            //vacina.disapled = true;
+        }else{
+           hora.disabled = false;
+            data.disabled = false;
+            //vacina.disapled = false;
+        }
+    }
+
+
+</script>
 </html>

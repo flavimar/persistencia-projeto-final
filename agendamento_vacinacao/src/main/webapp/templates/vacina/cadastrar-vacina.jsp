@@ -31,7 +31,7 @@
                 </div>
                 <div class="col-md-6">
                     <label for="doses" class="form-label">Quantidade de doses</label>
-                    <input type="number" name="doses" class="form-control" id="doses">
+                    <input type="number" onchange="test()" name="doses" class="form-control" id="doses">
                 </div>
                 <div class="col-md-6">
                     <label for="periodicidade" class="form-label">Periodicidade</label>
@@ -61,5 +61,20 @@
     </div>
 </div>
 </body>
+<script>
+    function test(){
+        var p = document.querySelector("#periodicidade");
+        var i = document.querySelector("#intervalo");
+        d = document.getElementById("doses").value;
+        console.log(p)
+        if(d > 1){
+            p.disabled = false;
+            i.disabled = false;
+        }else{
+            p.disabled = true;
+            i.disabled = true;
+        }
+    }
 
+</script>
 </html>

@@ -82,7 +82,7 @@ public class ControleAgenda extends HttpServlet {
                 agenda.setDataSituacao(new Date());
             }
             agenda.setSituacao(TipoSituacao.valueOf(sit));
-            if(request.getParameter("obs") != null) {
+            if(!StringUtil.isNullOrEmpty(request.getParameter("obs"))) {
                 agenda.setObservacao(request.getParameter("obs"));
             }
             agenda.setVacina(new Vacina(Integer.parseInt(request.getParameter("vacina"))));
@@ -143,12 +143,19 @@ public class ControleAgenda extends HttpServlet {
         Agenda agenda = new Agenda();
         agenda.setId(Long.parseLong(request.getParameter("id")));
         String data = request.getParameter("data");
-        agenda.setData(sdf.parse(data));
-        agenda.setHora(LocalTime.parse(request.getParameter("hora")));
-        agenda.setDataSituacao(sdf.parse(request.getParameter("dataSituacao")));
+        String hora = request.getParameter("hora");
+        if(!StringUtil.isNullOrEmpty(data) && !StringUtil.isNullOrEmpty(hora)){
+            agenda.setData(sdf.parse(data));
+            agenda.setHora(LocalTime.parse(hora));
+        }
         String sit = request.getParameter("situacao");
+        if(TipoSituacao.valueOf(sit) != TipoSituacao.AGENDADO){
+            agenda.setDataSituacao(new Date());
+        }
         agenda.setSituacao(TipoSituacao.valueOf(sit));
-        agenda.setObservacao(request.getParameter("obs"));
+        if(!StringUtil.isNullOrEmpty(request.getParameter("obs"))) {
+            agenda.setObservacao(request.getParameter("obs"));
+        }
         en = Conexao.getEntityManager();
         DaoAgenda daoAgenda = new DaoAgenda(en);
         Agenda upAgenda = daoAgenda.findById(agenda.getId());
@@ -185,7 +192,9 @@ public class ControleAgenda extends HttpServlet {
         long id =  Long.parseLong(request.getParameter("id"));
         en = Conexao.getEntityManager();
         DaoAgenda daoAgenda = new DaoAgenda(en);
+        daoVacina = new DaoVacina(en);
         Agenda agenda = daoAgenda.findById(id);
+        request.setAttribute("vacinas",daoVacina.findAll());
         RequestDispatcher rd = request.getRequestDispatcher("/templates/agenda/editar-agenda.jsp");
         request.setAttribute("agenda",agenda);
         en.close();
@@ -195,9 +204,15 @@ public class ControleAgenda extends HttpServlet {
     protected void getList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
         en = Conexao.getEntityManager();
         DaoAgenda daoAgenda = new DaoAgenda(en);
-        java.util.List<Agenda> agendas = daoAgenda.findAll();
+        String filtro = request.getParameter("filtro");
+        TipoSituacao tipoSituacao = null;
+        if(!StringUtil.isNullOrEmpty(filtro)) {
+           tipoSituacao = TipoSituacao.valueOf(filtro);
+        }
+        java.util.List<Agenda> agendas = daoAgenda.findAll(tipoSituacao);
         RequestDispatcher rd = request.getRequestDispatcher("/templates/agenda/listar-agendas.jsp");
         request.setAttribute("lista", agendas);
+        request.setAttribute("filtro",tipoSituacao);
         request.setAttribute("ms", request.getParameter("ms"));
         rd.forward(request, response);
     }

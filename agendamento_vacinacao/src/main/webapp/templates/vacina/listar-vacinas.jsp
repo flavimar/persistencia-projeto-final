@@ -50,9 +50,9 @@
             <th scope="row"><%=cout++ %></th>
             <td><%=vacina.getTitulo()%></td>
             <td><%=vacina.getDoses()%></td>
-            <td><%=vacina.getPeriodicidade()%></td>
-            <td><%=vacina.getIntervalo()%></td>
-            <td><%=vacina.getDescricao()%></td>
+            <td><%=vacina.getPeriodicidade() != null? vacina.getPeriodicidade():"-"%></td>
+            <td><%=vacina.getIntervalo() != 0? vacina.getIntervalo():"-"%></td>
+            <td><%=vacina.getDescricao() != null? vacina.getDescricao():"-"%></td>
             <td> <a href="remover?id=<%=vacina.getId()%>"><i class="bi bi-trash"></i> </a> </td>
             <td> <a href="atualizar?id=<%=vacina.getId()%>"> <i class="bi bi-pencil-square"></i> </a> </td>
         </tr>
