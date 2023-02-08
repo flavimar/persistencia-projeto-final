@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 public class DaoVacina {
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     public DaoVacina(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -22,7 +22,6 @@ public class DaoVacina {
         entityManager.getTransaction().begin();
         List<Vacina> vacinas = entityManager.createQuery("select u from Vacina as u").getResultList();
         entityManager.getTransaction().commit();
-        entityManager.close();
         return vacinas;
     }
     public Vacina findById(long id){

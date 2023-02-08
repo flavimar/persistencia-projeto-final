@@ -20,7 +20,7 @@
 
 <body>
 <div class="container">
-    <a href="../../index.jsp">
+    <a href="listar">
         <button class="btn btn-primary">
             <i class="bi bi-chevron-left"></i>
             <span>Voltar</span>
@@ -36,16 +36,16 @@
                 </div>
                 <div class="col-md-6">
                     <label for="doses" class="form-label">Quantidade de doses</label>
-                    <input type="number" name="doses" class="form-control" id="doses" value="<%=vacina.getDoses()%>" required>
+                    <input type="number" name="doses" onchange="test()" class="form-control" id="doses" value="<%=vacina.getDoses()%>">
                 </div>
                 <div class="col-md-6">
                     <label for="periodicidade" class="form-label">Periodicidade</label>
-                    <select class="form-select" name="periodicidade" id="periodicidade" aria-label="Default select example" required>
+                    <select class="form-select" name="periodicidade" id="periodicidade" aria-label="Default select example">
                         <option selected>Selecione</option>
-                        <option value="DIA" <%=vacina.getPeriodicidade().equals(Periodicidade.DIA)? "selected" : null %> >Dia</option>
-                        <option value="SEMANA" <%=vacina.getPeriodicidade().equals(Periodicidade.SEMANA)? "selected" : null %>>Semena</option>
-                        <option value="MES" <%=vacina.getPeriodicidade().equals(Periodicidade.MES)? "selected" : null %>>Mês</option>
-                        <option value="ANO" <%=vacina.getPeriodicidade().equals(Periodicidade.ANO)? "selected" : null %>>Ano</option>
+                        <option value="DIA" <%=vacina.getPeriodicidade() != null && vacina.getPeriodicidade().equals(Periodicidade.DIA)? "selected" : null %> >Dia</option>
+                        <option value="SEMANA" <%=vacina.getPeriodicidade() != null && vacina.getPeriodicidade().equals(Periodicidade.SEMANA)? "selected" : null %>>Semena</option>
+                        <option value="MES" <%=vacina.getPeriodicidade() != null && vacina.getPeriodicidade().equals(Periodicidade.MES)? "selected" : null %>>Mês</option>
+                        <option value="ANO" <%=vacina.getPeriodicidade() != null && vacina.getPeriodicidade().equals(Periodicidade.ANO)? "selected" : null %>>Ano</option>
                     </select>
                 </div>
                 <div class="col-md-6">
@@ -66,4 +66,19 @@
     </div>
 </div>
 </body>
+<script>
+    function test(){
+        var p = document.querySelector("#periodicidade");
+        var i = document.querySelector("#intervalo");
+        d = document.getElementById("doses").value;
+        console.log(p)
+        if(d > 1){
+            p.disabled = false;
+            i.disabled = false;
+        }else{
+            p.disabled = true;
+            i.disabled = true;
+        }
+    }
+</script>
 </html>

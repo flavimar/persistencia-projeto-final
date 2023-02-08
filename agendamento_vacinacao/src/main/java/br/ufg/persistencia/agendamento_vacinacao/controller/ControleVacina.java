@@ -84,10 +84,18 @@ public class ControleVacina extends HttpServlet {
     protected void update(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Vacina vacina = new Vacina();
         vacina.setTitulo( request.getParameter("titulo"));
-        vacina.setDescricao(request.getParameter("descricao"));
+        if(!StringUtil.isNullOrEmpty(request.getParameter("descricao"))) {
+            vacina.setDescricao(request.getParameter("descricao") );
+        }
         vacina.setDoses(Integer.parseInt(request.getParameter("doses")));
-        vacina.setIntervalo(Integer.parseInt(request.getParameter("intervalo")));
-        vacina.setPeriodicidade(Periodicidade.valueOf(request.getParameter("periodicidade")));
+        String intervalo = request.getParameter("intervalo");
+        if (intervalo != null) {
+            vacina.setIntervalo(Integer.parseInt(intervalo));
+        }
+        String periodicidade = request.getParameter("periodicidade");
+        if(periodicidade != null) {
+            vacina.setPeriodicidade(Periodicidade.valueOf(periodicidade));
+        }
         en = Conexao.getEntityManager();
         DaoVacina daoVacina= new DaoVacina(en);
         Vacina upVacina = daoVacina.findById(vacina.getId());
@@ -110,13 +118,12 @@ public class ControleVacina extends HttpServlet {
         }
         List<Agenda> agendas = daoAgenda.findByVacinaId(vacina.getId());
         if (!agendas.isEmpty()){
-            en.close();
             response.sendRedirect("listar?ms='vacina já vinculada a agenda'");
         }else {
             daoVacina.delete(vacina);
-            en.close();
             response.sendRedirect("listar");
         }
+        en.close();
     }
 
     private void getInsert(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -138,6 +145,7 @@ public class ControleVacina extends HttpServlet {
         en = Conexao.getEntityManager();
         DaoVacina daoAgenda = new DaoVacina(en);
         java.util.List<Vacina> agendas = daoAgenda.findAll();
+        en.close();
         RequestDispatcher rd = request.getRequestDispatcher("/templates/vacina/listar-vacinas.jsp");
         request.setAttribute("lista", agendas);
         request.setAttribute("ms", request.getParameter("ms"));

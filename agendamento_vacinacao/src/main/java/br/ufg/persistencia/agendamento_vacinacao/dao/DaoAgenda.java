@@ -42,7 +42,6 @@ public class DaoAgenda {
                 .setParameter(1,vacinaId)
                 .getResultList();
         entityManager.getTransaction().commit();
-        entityManager.close();
         return agendas;
     }
     public Agenda findById(long id){

@@ -2,9 +2,11 @@ package br.ufg.persistencia.agendamento_vacinacao.controller;
 
 import br.ufg.persistencia.agendamento_vacinacao.dao.Conexao;
 import br.ufg.persistencia.agendamento_vacinacao.dao.DaoAgenda;
+import br.ufg.persistencia.agendamento_vacinacao.dao.DaoUsuario;
 import br.ufg.persistencia.agendamento_vacinacao.dao.DaoVacina;
 import br.ufg.persistencia.agendamento_vacinacao.model.Agenda;
 import br.ufg.persistencia.agendamento_vacinacao.model.TipoSituacao;
+import br.ufg.persistencia.agendamento_vacinacao.model.Usuario;
 import br.ufg.persistencia.agendamento_vacinacao.model.Vacina;
 import br.ufg.persistencia.agendamento_vacinacao.service.ServicoVacina;
 import br.ufg.persistencia.agendamento_vacinacao.util.StringUtil;
@@ -85,9 +87,19 @@ public class ControleAgenda extends HttpServlet {
             if(!StringUtil.isNullOrEmpty(request.getParameter("obs"))) {
                 agenda.setObservacao(request.getParameter("obs"));
             }
-            agenda.setVacina(new Vacina(Integer.parseInt(request.getParameter("vacina"))));
+            agenda.setVacina(new Vacina(Long.parseLong(request.getParameter("vacina"))));
+
             en = Conexao.getEntityManager();
             DaoAgenda daoAgenda = new DaoAgenda(en);
+            DaoUsuario daoUsuario = new DaoUsuario(en);
+            String usuario = request.getParameter("usuario");
+            Usuario usuario1 = daoUsuario.findByNome(usuario);
+            if(usuario1 == null){
+                response.sendRedirect("listar?ms=usuario não existe");
+            }
+            agenda.setUsuario(new Usuario(usuario1.getId()));
+
+
             daoAgenda.create(agenda);
             EntityManager entityManager = Conexao.getEntityManager();
             DaoVacina daoVacina = new DaoVacina(entityManager);
@@ -135,6 +147,8 @@ public class ControleAgenda extends HttpServlet {
             en.close();
         }catch (ParseException e){
             e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
     @SneakyThrows
@@ -183,8 +197,10 @@ public class ControleAgenda extends HttpServlet {
     private void getInsert(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         en = Conexao.getEntityManager();
         daoVacina = new DaoVacina(en);
+        DaoUsuario daoUsuario = new DaoUsuario(en);
         RequestDispatcher rd = request.getRequestDispatcher("/templates/agenda/cadastrar-agenda.jsp");
         request.setAttribute("vacinas",daoVacina.findAll());
+        request.setAttribute("usuarios",daoUsuario.findAll());
         en.close();
         rd.forward(request, response);
     }

@@ -32,6 +32,10 @@ public class Agenda {
     @JoinColumn(name = "vacina_id")
     private Vacina vacina;
 
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
+
     public void atualizarAgenda(Agenda agenda) {
         this.id = agenda.getId() != 0? agenda.getId() : this.id;
         this.data = agenda.getData() != null? agenda.getData() : this.data;

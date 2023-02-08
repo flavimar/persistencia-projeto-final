@@ -22,10 +22,16 @@ public class DaoUsuario {
         entityManager.getTransaction().begin();
         List<Usuario> users = entityManager.createQuery("select u from Usuario as u").getResultList();
         entityManager.getTransaction().commit();
-        entityManager.close();
         return users;
     }
-
+    public Usuario findByNome(String nome){
+        entityManager.getTransaction().begin();
+        Usuario usuario = (Usuario) entityManager.createQuery("select u from Usuario as u where u.nome = ?1")
+                .setParameter(1,nome)
+                .getSingleResult();
+        entityManager.getTransaction().commit();
+        return usuario;
+    }
     public List<Usuario> findByAlergiaId(long alergiaId){
         entityManager.getTransaction().begin();
         List<Usuario> usuarios = entityManager.createQuery("select a from Usuario as a where a.alergia.id = ?1")

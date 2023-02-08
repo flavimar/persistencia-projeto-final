@@ -8,8 +8,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="br.ufg.persistencia.agendamento_vacinacao.model.Vacina" %>
 <%@ page import="java.util.List" %>
+<%@ page import="br.ufg.persistencia.agendamento_vacinacao.model.Usuario" %>
+<%@ page import="javax.swing.plaf.LabelUI" %>
 <%
     List<Vacina> vacinas = (List<Vacina>) request.getAttribute("vacinas");
+    List<Usuario> usuarios = (List<Usuario>) request.getAttribute("usuarios");
+    System.out.println(usuarios);
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -21,7 +25,7 @@
 </head>
 <body>
 <div class="container">
-    <a href="../index.jsp">
+    <a href="listar">
         <button class="btn btn-primary">
             <i class="bi bi-chevron-left"></i>
             <span>Voltar</span>
@@ -32,14 +36,15 @@
         <div class="card-body">
             <form method="post" action="inserir" class="row g-3">
                 <div class="col-md-6">
-                    <label for="situacao" class="form-label">Situação</label>
-                    <select class="form-select" onchange="test()" name="situacao" id="situacao" aria-label="Default select example" required>
-                        <option selected>Selecione</option>
-                        <option value="AGENDADO">Agendado</option>
-                        <option value="CANCELADO">Cancelado</option>
-                        <option value="REALIZADO">Realizado</option>
-                    </select>
+                    <label for="usuario" class="form-label">Usuario do agendamento</label>
+                    <input class="form-control" list="datalistOptions" id="usuario" name="usuario" placeholder="Procure o usuario">
+                    <datalist id="datalistOptions">
+                        <%for(Usuario usuario : usuarios){%>
+                        <option value="<%=usuario.getNome()%>"></option>
+                        <%}%>
+                    </datalist>
                 </div>
+
                 <div class="col-md-6">
                     <label for="vacina" class="form-label">Vacina</label>
                     <select class="form-select" name="vacina" id="vacina" aria-label="Default select example" required>
@@ -49,11 +54,20 @@
                         <%}%>
                     </select>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
+                    <label for="situacao" class="form-label">Situação</label>
+                    <select class="form-select" onchange="test()" name="situacao" id="situacao" aria-label="Default select example" required>
+                        <option selected>Selecione</option>
+                        <option value="AGENDADO">Agendado</option>
+                        <option value="CANCELADO">Cancelado</option>
+                        <option value="REALIZADO">Realizado</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
                     <label for="data" class="form-label">Data</label>
                     <input type="date" name="data" class="form-control" id="data" placeholder="dd/mm/aaaa" >
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label for="hora" class="form-label">Hora</label>
                     <input type="time" name="hora" class="form-control" id="hora">
                 </div>
@@ -87,7 +101,10 @@
             //vacina.disapled = false;
         }
     }
-
+    function user(){
+        var value = document.getElementById("usuario");
+        console.log(value.value)
+    }
 
 </script>
 </html>

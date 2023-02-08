@@ -15,7 +15,7 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(length = 10)
     private long id;
-    @Column(name = "nome",length = 60,nullable = false)
+    @Column(name = "nome",length = 60,nullable = false,unique = true)
     private String nome;
     @Column(name = "data_nasc",nullable = false)
     private Date dataNasc;
@@ -32,6 +32,9 @@ public class Usuario {
     @Column(name = "uf", length = 25)
     private String uf;
 
+    public Usuario(long id){
+        this.id = id;
+    }
 
     public void atualizaUsuario(Usuario usuario) {
         this.nome = usuario.getNome() != null? usuario.getNome() :this.nome;

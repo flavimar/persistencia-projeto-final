@@ -15,7 +15,7 @@
 </head>
 <body>
 <div class="container">
-    <a href="../index.jsp">
+    <a href="listar">
         <button class="btn btn-primary">
             <i class="bi bi-chevron-left"></i>
             <span>Voltar</span>
