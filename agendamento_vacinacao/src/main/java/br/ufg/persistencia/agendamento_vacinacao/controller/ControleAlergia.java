@@ -1,11 +1,8 @@
 package br.ufg.persistencia.agendamento_vacinacao.controller;
 
-import br.ufg.persistencia.agendamento_vacinacao.dao.Conexao;
-import br.ufg.persistencia.agendamento_vacinacao.dao.DaoAgenda;
-import br.ufg.persistencia.agendamento_vacinacao.dao.DaoVacina;
-import br.ufg.persistencia.agendamento_vacinacao.model.Agenda;
-import br.ufg.persistencia.agendamento_vacinacao.model.Periodicidade;
-import br.ufg.persistencia.agendamento_vacinacao.model.Vacina;
+
+import br.ufg.persistencia.agendamento_vacinacao.dao.*;
+import br.ufg.persistencia.agendamento_vacinacao.model.*;
 import br.ufg.persistencia.agendamento_vacinacao.util.StringUtil;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -19,8 +16,9 @@ import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/vacina/*")
-public class ControleVacina extends HttpServlet {
+
+@WebServlet("/alergia/*")
+public class ControleAlergia extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private EntityManager en;
     @Override
@@ -31,7 +29,7 @@ public class ControleVacina extends HttpServlet {
                 insert(request, response);
                 break;
             case "/atualizar":
-                    update(request, response);
+                update(request, response);
                 break;
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -61,85 +59,70 @@ public class ControleVacina extends HttpServlet {
         }
     }
     protected void insert(HttpServletRequest request, HttpServletResponse response){
-            Vacina vacina = new Vacina();
-            vacina.setTitulo( request.getParameter("titulo"));
-            if(!StringUtil.isNullOrEmpty(request.getParameter("descricao"))) {
-                vacina.setDescricao(request.getParameter("descricao") );
-            }
-            vacina.setDoses(Integer.parseInt(request.getParameter("doses")));
-            String intervalo = request.getParameter("intervalo");
-            if (intervalo != null) {
-                vacina.setIntervalo(Integer.parseInt(intervalo));
-            }
-            String periodicidade = request.getParameter("periodicidade");
-            if(periodicidade != null) {
-                vacina.setPeriodicidade(Periodicidade.valueOf(periodicidade));
-            }
+        Alergia alergia = new Alergia();
+        alergia.setNome( request.getParameter("nome"));
 
-            en = Conexao.getEntityManager();
-            DaoVacina daoVacina = new DaoVacina(en);
-            daoVacina.create(vacina);
+        en = Conexao.getEntityManager();
+        DaoAlergia daoAlergia = new DaoAlergia(en);
+        daoAlergia.create(alergia);
     }
+
     @SneakyThrows
     protected void update(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Vacina vacina = new Vacina();
-        vacina.setTitulo( request.getParameter("titulo"));
-        vacina.setDescricao(request.getParameter("descricao"));
-        vacina.setDoses(Integer.parseInt(request.getParameter("doses")));
-        vacina.setIntervalo(Integer.parseInt(request.getParameter("intervalo")));
-        vacina.setPeriodicidade(Periodicidade.valueOf(request.getParameter("periodicidade")));
+        Alergia alergia = new Alergia();
+        alergia.setNome( request.getParameter("nome"));
         en = Conexao.getEntityManager();
-        DaoVacina daoVacina= new DaoVacina(en);
-        Vacina upVacina = daoVacina.findById(vacina.getId());
-        if(upVacina == null){
-            response.sendRedirect("listar?ms='Vacina não encontrada'");
+        DaoAlergia daoAlergia= new DaoAlergia(en);
+        Alergia upAlergia = daoAlergia.findById(alergia.getId());
+        if(upAlergia == null){
+            response.sendRedirect("listar?ms='Alergia não encontrada'");
         }else {
-            upVacina.atualizarVacina(vacina);
-            daoVacina.update(upVacina);
+            upAlergia.atualizarAlergia(alergia);
+            daoAlergia.update(upAlergia);
             en.close();
         }
     }
     public void delete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         long id = Long.parseLong(request.getParameter("id"));
         en = Conexao.getEntityManager();
-        DaoVacina daoVacina = new DaoVacina(en);
-        DaoAgenda daoAgenda = new DaoAgenda(en);
-        Vacina vacina= daoVacina.findById(id);
-        if(vacina == null){
-            response.sendRedirect("listar?ms='Vacina não encontrada'");
+        DaoAlergia daoAlergia = new DaoAlergia(en);
+        DaoUsuario daoUsuario = new DaoUsuario(en);
+        Alergia alergia = daoAlergia.findById(id);
+        if(alergia == null){
+            response.sendRedirect("listar?ms='Alergia não encontrada'");
         }
-        List<Agenda> agendas = daoAgenda.findByVacinaId(vacina.getId());
-        if (!agendas.isEmpty()){
+        List<Usuario> usuarios = daoUsuario.findByAlergiaId(alergia.getId());
+        if (!usuarios.isEmpty()){
             en.close();
-            response.sendRedirect("listar?ms='vacina já vinculada a agenda'");
+            response.sendRedirect("listar?ms='Usuário já tem essa alergia'");
         }else {
-            daoVacina.delete(vacina);
+            daoAlergia.delete(alergia);
             en.close();
             response.sendRedirect("listar");
         }
     }
 
     private void getInsert(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        RequestDispatcher rd = request.getRequestDispatcher("/templates/vacina/cadastrar-vacina.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("/templates/alergia/cadastrar-alergia.jsp");
         rd.forward(request, response);
     }
+
     private void getUpdate(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         long id =  Long.parseLong(request.getParameter("id"));
         en = Conexao.getEntityManager();
-        DaoVacina daoVacina = new DaoVacina(en);
-        Vacina vacina = daoVacina.findById(id);
-        RequestDispatcher rd = request.getRequestDispatcher("/templates/vacina/editar-vacina.jsp");
-        request.setAttribute("vacina",vacina);
+        DaoAlergia daoAlergia = new DaoAlergia(en);
+        Alergia alergia = daoAlergia.findById(id);
+        RequestDispatcher rd = request.getRequestDispatcher("/templates/alergia/editar-alergia.jsp");
+        request.setAttribute("alergia",alergia);
         en.close();
         rd.forward(request, response);
-
     }
     protected void getList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
         en = Conexao.getEntityManager();
-        DaoVacina daoAgenda = new DaoVacina(en);
-        java.util.List<Vacina> agendas = daoAgenda.findAll();
-        RequestDispatcher rd = request.getRequestDispatcher("/templates/vacina/listar-vacinas.jsp");
-        request.setAttribute("lista", agendas);
+        DaoAlergia daoUsuario = new DaoAlergia(en);
+        java.util.List<Alergia> usuarios = daoUsuario.findAll();
+        RequestDispatcher rd = request.getRequestDispatcher("/templates/alergia/listar-alegias.jsp");
+        request.setAttribute("lista", usuarios);
         request.setAttribute("ms", request.getParameter("ms"));
         rd.forward(request, response);
     }

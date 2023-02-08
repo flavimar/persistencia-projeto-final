@@ -1,5 +1,6 @@
 package br.ufg.persistencia.agendamento_vacinacao.dao;
 
+import br.ufg.persistencia.agendamento_vacinacao.model.Agenda;
 import br.ufg.persistencia.agendamento_vacinacao.model.Usuario ;
 
 import javax.persistence.EntityManager;
@@ -23,6 +24,16 @@ public class DaoUsuario {
         entityManager.getTransaction().commit();
         entityManager.close();
         return users;
+    }
+
+    public List<Usuario> findByAlergiaId(long alergiaId){
+        entityManager.getTransaction().begin();
+        List<Usuario> usuarios = entityManager.createQuery("select a from Usuario as a where a.alergia.id = ?1")
+                .setParameter(1,alergiaId)
+                .getResultList();
+        entityManager.getTransaction().commit();
+        entityManager.close();
+        return usuarios;
     }
     public Usuario findById(long id){
         entityManager.getTransaction().begin();
