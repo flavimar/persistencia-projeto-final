@@ -18,7 +18,7 @@ public class Usuario {
     @Column(name = "nome",length = 60,nullable = false,unique = true)
     private String nome;
     @Column(name = "data_nasc",nullable = false)
-    private Date dataNasc;
+    private String dataNasc;
     @Column(name = "sexo",length = 10,nullable = false)
     private String sexo;
     @Column(name = "logradouro", length = 60,nullable = false)
@@ -36,7 +36,7 @@ public class Usuario {
         this.id = id;
     }
 
-    public void atualizaUsuario(Usuario usuario) {
+    public void atualizarUsuario(Usuario usuario) {
         this.nome = usuario.getNome() != null? usuario.getNome() :this.nome;
         this.dataNasc = usuario.getDataNasc() != null? usuario.getDataNasc() :this.dataNasc;
         this.sexo = usuario.getSexo() != null? usuario.getSexo() :this.sexo;
