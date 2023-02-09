@@ -6,6 +6,7 @@ import br.ufg.persistencia.agendamento_vacinacao.dao.DaoVacina;
 import br.ufg.persistencia.agendamento_vacinacao.model.Agenda;
 import br.ufg.persistencia.agendamento_vacinacao.model.Periodicidade;
 import br.ufg.persistencia.agendamento_vacinacao.model.Vacina;
+import br.ufg.persistencia.agendamento_vacinacao.service.ServicoVacina;
 import br.ufg.persistencia.agendamento_vacinacao.util.StringUtil;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -94,12 +95,13 @@ public class ControleVacina extends HttpServlet {
             vacina.setIntervalo(Integer.parseInt(intervalo));
         }
         String periodicidade = request.getParameter("periodicidade");
-        if(periodicidade != null) {
+        if(!StringUtil.isNullOrEmpty(periodicidade)) {
             vacina.setPeriodicidade(Periodicidade.valueOf(periodicidade));
         }
         en = Conexao.getEntityManager();
         DaoVacina daoVacina= new DaoVacina(en);
-        Vacina upVacina = daoVacina.findById(vacina.getId());
+        ServicoVacina servicoVacina = new ServicoVacina();
+        Vacina upVacina  = servicoVacina.buscaVacina(vacina.getId());
         if(upVacina == null){
             response.sendRedirect("listar?ms='Vacina não encontrada'");
         }else {

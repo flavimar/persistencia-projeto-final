@@ -21,7 +21,7 @@ public class Alergia {
     @Column(name = "nome",length = 40,nullable = false,unique = true)
     private String nome;
 
-    @ManyToMany(mappedBy = "alergias")
+    @ManyToMany(fetch = FetchType.LAZY,mappedBy = "alergias")
     Set<Usuario> usuarios;
     public void atualizarAlergia(Alergia alergia) {
         this.id = alergia.getId() != 0? alergia.getId() : this.id;

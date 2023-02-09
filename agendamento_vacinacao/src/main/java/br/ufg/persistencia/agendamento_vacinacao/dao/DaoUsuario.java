@@ -20,7 +20,8 @@ public class DaoUsuario {
     }
     public List<Usuario> findAll(){
         entityManager.getTransaction().begin();
-        List<Usuario> users = entityManager.createQuery("select u from Usuario as u").getResultList();
+        List<Usuario> users = entityManager.createQuery("select u from Usuario as u")
+                .getResultList();
         entityManager.getTransaction().commit();
         return users;
     }

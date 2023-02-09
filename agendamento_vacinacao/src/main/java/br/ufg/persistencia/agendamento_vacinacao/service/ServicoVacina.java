@@ -8,9 +8,10 @@ import javax.persistence.EntityManager;
 
 public class ServicoVacina {
     EntityManager en;
+    DaoVacina daoVacina;
     public Vacina buscaVacina(long id){
         en = Conexao.getEntityManager();
-        DaoVacina daoVacina = new DaoVacina(en);
+        daoVacina = new DaoVacina(en);
         Vacina vacina = daoVacina.findById(id);
         en.close();
         return vacina;

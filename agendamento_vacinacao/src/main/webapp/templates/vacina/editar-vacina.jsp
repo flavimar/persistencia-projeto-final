@@ -42,7 +42,7 @@
                 <div class="col-md-6">
                     <label for="periodicidade" class="form-label">Periodicidade</label>
                     <select class="form-select" name="periodicidade" id="periodicidade" aria-label="Default select example">
-                        <option selected>Selecione</option>
+                        <option value="" selected>Selecione</option>
                         <option value="DIA" <%=vacina.getPeriodicidade() != null && vacina.getPeriodicidade().equals(Periodicidade.DIA)? "selected" : null %> >Dia</option>
                         <option value="SEMANA" <%=vacina.getPeriodicidade() != null && vacina.getPeriodicidade().equals(Periodicidade.SEMANA)? "selected" : null %>>Semena</option>
                         <option value="MES" <%=vacina.getPeriodicidade() != null && vacina.getPeriodicidade().equals(Periodicidade.MES)? "selected" : null %>>Mês</option>

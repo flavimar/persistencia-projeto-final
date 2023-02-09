@@ -8,6 +8,7 @@ import br.ufg.persistencia.agendamento_vacinacao.model.Agenda;
 import br.ufg.persistencia.agendamento_vacinacao.model.TipoSituacao;
 import br.ufg.persistencia.agendamento_vacinacao.model.Usuario;
 import br.ufg.persistencia.agendamento_vacinacao.model.Vacina;
+import br.ufg.persistencia.agendamento_vacinacao.service.ServicoAgenda;
 import br.ufg.persistencia.agendamento_vacinacao.service.ServicoVacina;
 import br.ufg.persistencia.agendamento_vacinacao.util.StringUtil;
 import jakarta.servlet.RequestDispatcher;
@@ -19,6 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -72,13 +74,13 @@ public class ControleAgenda extends HttpServlet {
     }
     protected void insert(HttpServletRequest request, HttpServletResponse response){
         try {
-            Agenda agenda = new Agenda();
+        Agenda agenda = new Agenda();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             String data = request.getParameter("data");
             String hora = request.getParameter("hora");
             if(!StringUtil.isNullOrEmpty(data) && !StringUtil.isNullOrEmpty(hora)){
-            agenda.setData(sdf.parse(data));
-            agenda.setHora(LocalTime.parse(hora));
+                agenda.setData(sdf.parse(data));
+                agenda.setHora(LocalTime.parse(hora));
             }
             String sit = request.getParameter("situacao");
             if(TipoSituacao.valueOf(sit) != TipoSituacao.AGENDADO){
@@ -89,67 +91,13 @@ public class ControleAgenda extends HttpServlet {
                 agenda.setObservacao(request.getParameter("obs"));
             }
             agenda.setVacina(new Vacina(Long.parseLong(request.getParameter("vacina"))));
+            Usuario usuario = new Usuario();
+            usuario.setNome(request.getParameter("usuario"));
+            agenda.setUsuario(usuario);
 
-            en = Conexao.getEntityManager();
-            DaoAgenda daoAgenda = new DaoAgenda(en);
-            DaoUsuario daoUsuario = new DaoUsuario(en);
-            String usuario = request.getParameter("usuario");
-            Usuario usuario1 = daoUsuario.findByNome(usuario);
-            if(usuario1 == null){
-                response.sendRedirect("listar?ms=usuario não existe");
-            }
-            agenda.setUsuario(new Usuario(usuario1.getId()));
-
-
-            daoAgenda.create(agenda);
-            EntityManager entityManager = Conexao.getEntityManager();
-            DaoVacina daoVacina = new DaoVacina(entityManager);
-            Vacina vacina = daoVacina.findById(agenda.getVacina().getId());
-            entityManager.close();
-            if(agenda.getSituacao().equals(TipoSituacao.AGENDADO)) {
-                int doses = vacina.getDoses();
-                Calendar c = Calendar.getInstance();
-                while(doses > 1) {
-                    Agenda novaAgenda = new Agenda();
-                    novaAgenda.setData(agenda.getData());
-                    novaAgenda.setVacina(new Vacina(agenda.getVacina().getId()));
-                    novaAgenda.setSituacao(agenda.getSituacao());
-                    novaAgenda.setHora(agenda.getHora());
-                    novaAgenda.setUsuario(agenda.getUsuario());
-                    switch (vacina.getPeriodicidade()) {
-                        case DIA:
-                            c.setTime(novaAgenda.getData());
-                            c.add(Calendar.DATE, vacina.getIntervalo());
-                            novaAgenda.setData(c.getTime());
-                            daoAgenda.create(novaAgenda);
-                            break;
-                        case SEMANA:
-                            c.setTime(novaAgenda.getData());
-                            c.add(Calendar.DATE, vacina.getIntervalo() * 7);
-                            novaAgenda.setData(c.getTime());
-                            daoAgenda.create(novaAgenda);
-                            break;
-                        case MES:
-                            c.setTime(novaAgenda.getData());
-                            c.add(Calendar.MONTH, vacina.getIntervalo());
-                            novaAgenda.setData(c.getTime());
-                            daoAgenda.create(novaAgenda);
-                            break;
-                        case ANO:
-                            c.setTime(novaAgenda.getData());
-                            c.add(Calendar.YEAR, vacina.getIntervalo());
-                            novaAgenda.setData(c.getTime());
-                            daoAgenda.create(novaAgenda);
-                            break;
-                    }
-                    agenda = novaAgenda;
-                    doses--;
-                }
-            }
-            en.close();
-        }catch (ParseException e){
-            e.printStackTrace();
-        } catch (IOException e) {
+        ServicoAgenda servicoAgenda = new ServicoAgenda();
+        String ms = servicoAgenda.insert(agenda);
+        } catch (ParseException e) {
             throw new RuntimeException(e);
         }
     }
@@ -196,13 +144,18 @@ public class ControleAgenda extends HttpServlet {
         response.sendRedirect("listar");
     }
 
+    @Transactional
     private void getInsert(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         en = Conexao.getEntityManager();
         daoVacina = new DaoVacina(en);
         DaoUsuario daoUsuario = new DaoUsuario(en);
         RequestDispatcher rd = request.getRequestDispatcher("/templates/agenda/cadastrar-agenda.jsp");
         request.setAttribute("vacinas",daoVacina.findAll());
-        request.setAttribute("usuarios",daoUsuario.findAll());
+        List<Usuario> usuarios = daoUsuario.findAll();
+        usuarios.forEach(u -> {
+            u.setAlergias(null);
+        });
+        request.setAttribute("usuarios",usuarios);
         en.close();
         rd.forward(request, response);
     }

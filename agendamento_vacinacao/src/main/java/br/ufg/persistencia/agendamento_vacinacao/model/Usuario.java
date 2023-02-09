@@ -32,7 +32,7 @@ public class Usuario {
     private String cidade;
     @Column(name = "uf", length = 25)
     private String uf;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "usuario_alergia",
             joinColumns = @JoinColumn(name = "usuario_id"),
