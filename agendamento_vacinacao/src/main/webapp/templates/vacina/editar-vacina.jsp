@@ -29,7 +29,8 @@
     <h1>Editar Vacina</h1>
     <div class="card">
         <div class="card-body">
-            <form method="post" action="inserir" class="row g-3">
+            <form method="post" action="atualizar" class="row g-3">
+                <input type="hidden" name="id" class="form-control" id="id" value="<%=vacina.getId()%>">
                 <div class="col-md-6">
                     <label for="titulo" class="form-label">Título</label>
                     <input type="text" name="titulo" class="form-control" id="titulo" value="<%=vacina.getTitulo()%>" required>

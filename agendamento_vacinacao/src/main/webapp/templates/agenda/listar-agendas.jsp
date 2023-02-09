@@ -31,7 +31,12 @@
     <a href="inserir">
         <button class="btn btn-primary">Cadastrar</button>
     </a>
-    <%=request.getAttribute("ms") != null?"<h2 class='text-danger'>"+request.getAttribute("ms")+"</h2":""%>
+    <%if(request.getAttribute("ms") != null){%>
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <%=request.getAttribute("ms")%>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <%}%>
     <h1>Listagem de Agendamento</h1>
     <div class="row">
         <div class="col-md-6">

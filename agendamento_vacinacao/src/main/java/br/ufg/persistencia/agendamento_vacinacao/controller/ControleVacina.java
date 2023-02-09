@@ -83,6 +83,7 @@ public class ControleVacina extends HttpServlet {
     @SneakyThrows
     protected void update(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Vacina vacina = new Vacina();
+        vacina.setId(Long.parseLong(request.getParameter("id")));
         vacina.setTitulo( request.getParameter("titulo"));
         if(!StringUtil.isNullOrEmpty(request.getParameter("descricao"))) {
             vacina.setDescricao(request.getParameter("descricao") );
