@@ -115,6 +115,7 @@ public class ControleAgenda extends HttpServlet {
                     novaAgenda.setVacina(new Vacina(agenda.getVacina().getId()));
                     novaAgenda.setSituacao(agenda.getSituacao());
                     novaAgenda.setHora(agenda.getHora());
+                    novaAgenda.setUsuario(agenda.getUsuario());
                     switch (vacina.getPeriodicidade()) {
                         case DIA:
                             c.setTime(novaAgenda.getData());
