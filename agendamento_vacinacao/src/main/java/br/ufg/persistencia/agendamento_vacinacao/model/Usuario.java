@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -31,6 +32,12 @@ public class Usuario {
     private String cidade;
     @Column(name = "uf", length = 25)
     private String uf;
+    @ManyToMany
+    @JoinTable(
+            name = "usuario_alergia",
+            joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "alergia_id"))
+    private List<Alergia> alergias;
 
     public Usuario(long id){
         this.id = id;

@@ -9,7 +9,11 @@
 <%@ page import="br.ufg.persistencia.agendamento_vacinacao.model.Usuario" %>
 <%@ page import="java.util.List" %>
 <%@ page import="br.ufg.persistencia.agendamento_vacinacao.model.Alergia" %>
-
+<%@ page import="java.util.ArrayList" %>
+<%
+    List<Alergia> alergias = (List<Alergia>) request.getAttribute("alergias");
+    int count = 1;
+%>
 <html>
 <head>
 <meta charset="UTF-8">
@@ -99,7 +103,6 @@
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <button type="submit" class="btn btn-secondary">Adicionar alergias</button>
                     <button type="submit" class="btn btn-primary">Cadastrar</button>
                 </div>
 
@@ -110,5 +113,6 @@
 
     </div>
 </div>
+
 </body>
 </html>

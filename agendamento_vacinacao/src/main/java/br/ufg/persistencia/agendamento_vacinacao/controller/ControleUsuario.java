@@ -1,10 +1,7 @@
 package br.ufg.persistencia.agendamento_vacinacao.controller;
 
 import br.ufg.persistencia.agendamento_vacinacao.dao.*;
-import br.ufg.persistencia.agendamento_vacinacao.model.Agenda;
-import br.ufg.persistencia.agendamento_vacinacao.model.TipoSituacao;
-import br.ufg.persistencia.agendamento_vacinacao.model.Usuario;
-import br.ufg.persistencia.agendamento_vacinacao.model.Vacina;
+import br.ufg.persistencia.agendamento_vacinacao.model.*;
 import br.ufg.persistencia.agendamento_vacinacao.util.StringUtil;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -20,6 +17,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -37,14 +35,12 @@ public class ControleUsuario extends HttpServlet {
                 insert(request, response);
                 break;
             case "/atualizar":
-                try {
-                    update(request, response);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                update(request, response);
+                break;
+            case "/vincular-alergias":
+                vicularAlergias(request, response);
                 break;
         }
-        response.sendRedirect("listar");
     }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
@@ -62,11 +58,15 @@ public class ControleUsuario extends HttpServlet {
             case "/listar":
                 getList(request,response);
                 break;
+            case "/vincular-alergias":
+                getAlergias(request,response);
+                break;
             default:
                 getList(request,response);
                 break;
         }
     }
+
     protected void insert(HttpServletRequest request, HttpServletResponse response){
         try {
             Usuario usuario = new Usuario();
@@ -87,10 +87,14 @@ public class ControleUsuario extends HttpServlet {
             DaoUsuario daoUsuario = new DaoUsuario(en);
             daoUsuario.create(usuario);
             en.close();
-
+            request.setAttribute("id",usuario.getId());
+            response.sendRedirect("vincular-alergias?id="+usuario.getId());
         } catch (ParseException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+
     }
     @SneakyThrows
     protected void update(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -117,7 +121,9 @@ public class ControleUsuario extends HttpServlet {
             upUsuario.atualizarUsuario(usuario);
             daoUsuario.update(upUsuario);
             en.close();
+            response.sendRedirect("listar");
         }
+
     }
     public void delete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         long id = Long.parseLong(request.getParameter("id"));
@@ -129,9 +135,39 @@ public class ControleUsuario extends HttpServlet {
         }
         daoUsuario.delete(usuario);
         en.close();
-        response.sendRedirect("listar");
+        response.sendRedirect("'listar");
     }
+    private void getAlergias(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        en = Conexao.getEntityManager();
+        daoAlergia = new DaoAlergia(en);
+        RequestDispatcher rd = request.getRequestDispatcher("/templates/alergia/vincular-alergias.jsp");
+        request.setAttribute("alergias",daoAlergia.findAll());
+        request.setAttribute("usuarioId", request.getParameter("id"));
+        en.close();
+        rd.forward(request, response);
+    }
+    private void vicularAlergias(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        en = Conexao.getEntityManager();
+        DaoUsuario daoUsuario = new DaoUsuario(en);
+        daoAlergia = new DaoAlergia(en);
+        long id = Long.parseLong(request.getParameter("id"));
+        Usuario usuario = daoUsuario.findById(id);
+        String nome = request.getParameter("alergia");
+        Alergia alergia = daoAlergia.findByNome(nome);
+        if(usuario != null && alergia != null){
+            if(usuario.getAlergias() == null){
+                usuario.setAlergias(new ArrayList<>());
+            }
+            usuario.getAlergias().add(alergia);
+            daoUsuario.update(usuario);
+            en.close();
+            response.sendRedirect("vincular-alergias?id="+usuario.getId());
+        }else{
 
+            response.sendRedirect("vincular-alergias");
+        }
+
+    }
     private void getInsert(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         en = Conexao.getEntityManager();
         daoAlergia = new DaoAlergia(en);

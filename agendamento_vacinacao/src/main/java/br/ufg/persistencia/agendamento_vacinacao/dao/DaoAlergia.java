@@ -22,8 +22,15 @@ public class DaoAlergia {
         entityManager.getTransaction().begin();
         List<Alergia> alergias = entityManager.createQuery("select u from Alergia as u").getResultList();
         entityManager.getTransaction().commit();
-        entityManager.close();
         return alergias;
+    }
+    public Alergia findByNome(String nome){
+        entityManager.getTransaction().begin();
+        Alergia alergia = (Alergia) entityManager.createQuery("select u from Alergia as u where u.nome = ?1")
+                .setParameter(1,nome)
+                .getSingleResult();
+        entityManager.getTransaction().commit();
+        return alergia;
     }
     public Alergia findById(long id){
         entityManager.getTransaction().begin();
