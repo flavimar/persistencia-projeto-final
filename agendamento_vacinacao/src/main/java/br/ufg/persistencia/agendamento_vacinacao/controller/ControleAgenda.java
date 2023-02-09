@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @WebServlet("/agenda/*")
 public class ControleAgenda extends HttpServlet {
@@ -218,18 +219,38 @@ public class ControleAgenda extends HttpServlet {
 
     }
     protected void getList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+        String ms = request.getParameter("ms");
         en = Conexao.getEntityManager();
         DaoAgenda daoAgenda = new DaoAgenda(en);
+        DaoUsuario daoUsuario = new DaoUsuario(en);
         String filtro = request.getParameter("filtro");
         TipoSituacao tipoSituacao = null;
         if(!StringUtil.isNullOrEmpty(filtro)) {
            tipoSituacao = TipoSituacao.valueOf(filtro);
         }
-        java.util.List<Agenda> agendas = daoAgenda.findAll(tipoSituacao);
+        boolean ord = Boolean.parseBoolean(request.getParameter("ord"));
+
+        String usuario = request.getParameter("usuario");
+        long usuarioId = 0;
+        Usuario usuario1 = null;
+        if(usuario != null) {
+            usuario1 = daoUsuario.findByNome(usuario);
+            if(usuario1 != null) {
+                usuarioId = usuario1.getId();
+            }else {
+                ms = "Usuario não existe";
+            }
+        }
+        java.util.List<Agenda> agendas = daoAgenda.findAll(tipoSituacao,ord,usuarioId);
         RequestDispatcher rd = request.getRequestDispatcher("/templates/agenda/listar-agendas.jsp");
         request.setAttribute("lista", agendas);
+        request.setAttribute("usuarios",daoUsuario.findAll());
         request.setAttribute("filtro",tipoSituacao);
-        request.setAttribute("ms", request.getParameter("ms"));
+        request.setAttribute("usuario",usuario1);
+        request.setAttribute("ord",ord);
+        request.setAttribute("ms",ms);
+        en.close();
         rd.forward(request, response);
     }
+
 }

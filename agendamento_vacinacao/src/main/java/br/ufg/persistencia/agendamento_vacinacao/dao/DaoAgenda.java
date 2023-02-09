@@ -20,26 +20,42 @@ public class DaoAgenda {
         entityManager.getTransaction().commit();
 
     }
-    public List<Agenda> findAll(TipoSituacao filtro){
+    public List<Agenda> findAll(TipoSituacao filtro,boolean ord,long usuarioId){
         entityManager.getTransaction().begin();
         StringBuilder sb = new StringBuilder();
         sb.append("select a from Agenda as a");
         if(filtro != null){
             sb.append(" where a.situacao = ?1");
         }
+        if(ord) {
+            sb.append(" order by case when a.situacao = 'AGENDADO' then 1 when a.situacao = 'REALIZADO' then 2 else 3 end asc,a.data,a.hora,a.dataSituacao");
+        }
+        if(usuarioId != 0){
+            sb.append(" where a.usuario.id = ?1");
+        }
         Query query = entityManager.createQuery(sb.toString());
         if(filtro != null){
             query.setParameter(1,filtro);
         }
+        if(usuarioId != 0 ){
+            query.setParameter(1,usuarioId);
+        }
         List<Agenda> users = query.getResultList();
         entityManager.getTransaction().commit();
-        entityManager.close();
         return users;
     }
     public List<Agenda> findByVacinaId(long vacinaId){
         entityManager.getTransaction().begin();
         List<Agenda> agendas = entityManager.createQuery("select a from Agenda as a where a.vacina.id = ?1")
                 .setParameter(1,vacinaId)
+                .getResultList();
+        entityManager.getTransaction().commit();
+        return agendas;
+    }
+    public List<Agenda> findByUsuarioId(long usuarioId){
+        entityManager.getTransaction().begin();
+        List<Agenda> agendas = entityManager.createQuery("select a from Agenda as a where a.usuario.id = ?1")
+                .setParameter(1,usuarioId)
                 .getResultList();
         entityManager.getTransaction().commit();
         return agendas;
