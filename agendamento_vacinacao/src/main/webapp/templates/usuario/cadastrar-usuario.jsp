@@ -98,12 +98,16 @@
                         <option value="99">99-Estrangeiro</option>
                     </select>
                 </div>
-
-                <div class="col-md-12">
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-secondary">Adicionar alergias</button>
                     <button type="submit" class="btn btn-primary">Cadastrar</button>
                 </div>
+
+
             </form>
+
         </div>
+
     </div>
 </div>
 </body>

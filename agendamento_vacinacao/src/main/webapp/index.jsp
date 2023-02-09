@@ -10,7 +10,7 @@
 <br/>
 <a href="agenda/listar">Listar agenda</a>
 <a href="vacina/listar">Listar vacina</a>
-<a href="usuario//listar">Listar usuário</a>
+<a href="usuario/listar">Listar usuário</a>
 <a href="alergia/listar">Listar alergia</a>
 
 </body>

@@ -65,6 +65,7 @@ public class ControleAlergia extends HttpServlet {
         en = Conexao.getEntityManager();
         DaoAlergia daoAlergia = new DaoAlergia(en);
         daoAlergia.create(alergia);
+        en.close();
     }
 
     @SneakyThrows
@@ -86,16 +87,11 @@ public class ControleAlergia extends HttpServlet {
         long id = Long.parseLong(request.getParameter("id"));
         en = Conexao.getEntityManager();
         DaoAlergia daoAlergia = new DaoAlergia(en);
-        DaoUsuario daoUsuario = new DaoUsuario(en);
         Alergia alergia = daoAlergia.findById(id);
         if(alergia == null){
             response.sendRedirect("listar?ms='Alergia não encontrada'");
         }
-        List<Usuario> usuarios = daoUsuario.findByAlergiaId(alergia.getId());
-        if (!usuarios.isEmpty()){
-            en.close();
-            response.sendRedirect("listar?ms='Usuário já tem essa alergia'");
-        }else {
+        else {
             daoAlergia.delete(alergia);
             en.close();
             response.sendRedirect("listar");
@@ -121,7 +117,7 @@ public class ControleAlergia extends HttpServlet {
         en = Conexao.getEntityManager();
         DaoAlergia daoUsuario = new DaoAlergia(en);
         java.util.List<Alergia> usuarios = daoUsuario.findAll();
-        RequestDispatcher rd = request.getRequestDispatcher("/templates/alergia/listar-alegias.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("/templates/alergia/listar-alergias.jsp");
         request.setAttribute("lista", usuarios);
         request.setAttribute("ms", request.getParameter("ms"));
         rd.forward(request, response);

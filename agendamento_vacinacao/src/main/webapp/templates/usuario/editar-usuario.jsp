@@ -99,8 +99,9 @@
                     </select>
                 </div>
 
-                <div class="col-md-12">
-                    <button type="submit" class="btn btn-primary">Editar</button>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-secondary">Adicionar alergias</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
                 </div>
             </form>
         </div>
