@@ -29,6 +29,7 @@
     <div class="card">
         <div class="card-body">
             <form method="post" action="atualizar" class="row g-3">
+                <input type="hidden" name="id" class="form-control" id="id" value="<%=alergia.getId()%>">
                 <div class="col-md-6">
                     <label for="nome" class="form-label">Nome</label>
                     <input type="text" name="nome" class="form-control" id="nome" value="<%=alergia.getNome()%>" >
