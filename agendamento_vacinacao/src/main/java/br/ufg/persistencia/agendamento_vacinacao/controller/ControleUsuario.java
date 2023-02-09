@@ -100,6 +100,7 @@ public class ControleUsuario extends HttpServlet {
     protected void update(HttpServletRequest request, HttpServletResponse response) throws IOException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Usuario usuario = new Usuario();
+        usuario.setId(Long.parseLong(request.getParameter("id")));
         usuario.setNome( request.getParameter("nome"));
         String dataNasc = request.getParameter("data_nasc");
         if(!StringUtil.isNullOrEmpty(dataNasc)){

@@ -71,6 +71,7 @@ public class ControleAlergia extends HttpServlet {
     @SneakyThrows
     protected void update(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Alergia alergia = new Alergia();
+        alergia.setId(Long.parseLong(request.getParameter("id")));
         alergia.setNome( request.getParameter("nome"));
         en = Conexao.getEntityManager();
         DaoAlergia daoAlergia= new DaoAlergia(en);
