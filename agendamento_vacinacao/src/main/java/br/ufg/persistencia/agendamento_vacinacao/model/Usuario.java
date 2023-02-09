@@ -18,7 +18,7 @@ public class Usuario {
     @Column(name = "nome",length = 60,nullable = false,unique = true)
     private String nome;
     @Column(name = "data_nasc",nullable = false)
-    private String dataNasc;
+    private Date dataNasc;
     @Column(name = "sexo",length = 10,nullable = false)
     private String sexo;
     @Column(name = "logradouro", length = 60,nullable = false)

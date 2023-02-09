@@ -13,7 +13,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     List<Usuario> usuarios = (List<Usuario>) request.getAttribute("lista");
-    TipoSexo tipoSexo = (TipoSexo) request.getAttribute("sexo");
     DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
     int count = 1;
 %>
@@ -54,10 +53,7 @@
             <th scope="row"><%=count++ %></th>
             <td><%=usuario.getNome()%></td>
             <td><%=formatter.format(usuario.getDataNasc())%></td>
-            <select class="form-select" name=sexo id="sexo" aria-label="Default select example">
-                <option value="F">Feminino</option>
-                <option value="M">Masculino</option>
-            </select>
+            <td><%=usuario.getSexo()%></td>
             <td><%=usuario.getSetor()%></td>
             <td><%=usuario.getCidade()%></td>
             <td> <a href="remover?id=<%=usuario.getId()%>"><i class="bi bi-trash"></i> </a> </td>

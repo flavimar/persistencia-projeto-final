@@ -68,46 +68,51 @@ public class ControleUsuario extends HttpServlet {
         }
     }
     protected void insert(HttpServletRequest request, HttpServletResponse response){
-        Usuario usuario = new Usuario();
-        usuario.setNome( request.getParameter("nome"));
-        usuario.setDataNasc(request.getParameter("data_nasc"));
-        usuario.setSexo( request.getParameter("sexo"));
-        usuario.setLogradouro( request.getParameter("logradouro"));
-        usuario.setNumero( Integer.valueOf(request.getParameter("numero")));
-        usuario.setSetor( request.getParameter("setor"));
-        usuario.setCidade( request.getParameter("cidade"));
-        usuario.setUf( request.getParameter("uf"));
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        java.sql.Date date = null;
         try {
-            date = new java.sql.Date(dateFormat.parse(usuario.getDataNasc()).getTime());
+            Usuario usuario = new Usuario();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            usuario.setNome( request.getParameter("nome"));
+            String dataNasc = request.getParameter("data_nasc");
+            if(!StringUtil.isNullOrEmpty(dataNasc)){
+                usuario.setDataNasc(sdf.parse(dataNasc));
+            }
+            usuario.setSexo( request.getParameter("sexo"));
+            usuario.setLogradouro( request.getParameter("logradouro"));
+            usuario.setNumero( Integer.valueOf(request.getParameter("numero")));
+            usuario.setSetor( request.getParameter("setor"));
+            usuario.setCidade( request.getParameter("cidade"));
+            usuario.setUf( request.getParameter("uf"));
+
+            en = Conexao.getEntityManager();
+            DaoUsuario daoUsuario = new DaoUsuario(en);
+            daoUsuario.create(usuario);
+            en.close();
+
         } catch (ParseException e) {
             e.printStackTrace();
         }
     }
     @SneakyThrows
     protected void update(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Usuario usuario = new Usuario();
         usuario.setNome( request.getParameter("nome"));
-        usuario.setDataNasc(request.getParameter("data_nasc"));
+        String dataNasc = request.getParameter("data_nasc");
+        if(!StringUtil.isNullOrEmpty(dataNasc)){
+            usuario.setDataNasc(sdf.parse(dataNasc));
+        }
         usuario.setSexo( request.getParameter("sexo"));
         usuario.setLogradouro( request.getParameter("logradouro"));
         usuario.setNumero( Integer.valueOf(request.getParameter("numero")));
         usuario.setSetor( request.getParameter("setor"));
         usuario.setCidade( request.getParameter("cidade"));
         usuario.setUf( request.getParameter("uf"));
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        java.sql.Date date = null;
-        try {
-            date = new java.sql.Date(dateFormat.parse(usuario.getDataNasc()).getTime());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+
         en = Conexao.getEntityManager();
         DaoUsuario daoUsuario = new DaoUsuario(en);
         Usuario upUsuario = daoUsuario.findById(usuario.getId());
         if(upUsuario == null){
-            response.sendRedirect("listar?ms='Agenda não encontrado'");
+            response.sendRedirect("listar?ms='Usuário não encontrado'");
         }else {
             upUsuario.atualizarUsuario(usuario);
             daoUsuario.update(upUsuario);
@@ -140,9 +145,9 @@ public class ControleUsuario extends HttpServlet {
         long id =  Long.parseLong(request.getParameter("id"));
         en = Conexao.getEntityManager();
         DaoUsuario daoUsuario = new DaoUsuario(en);
-        daoAlergia = new DaoAlergia(en);
+       //daoAlergia = new DaoAlergia(en);
         Usuario usuario = daoUsuario.findById(id);
-        request.setAttribute("alergias",daoAlergia.findAll());
+        //request.setAttribute("alergias",daoAlergia.findAll());
         RequestDispatcher rd = request.getRequestDispatcher("/templates/usuario/editar-usuario.jsp");
         request.setAttribute("usuario",usuario);
         en.close();

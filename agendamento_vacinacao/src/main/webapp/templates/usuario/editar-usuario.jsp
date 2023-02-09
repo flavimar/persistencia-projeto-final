@@ -30,29 +30,28 @@
     <h1>Editar Usuário</h1>
     <div class="card">
         <div class="card-body">
-            <form method="post" action="inserir" class="row g-3">
-                <div class="col-md-4">
+            <form method="post" action="atualizar" class="row g-3">
+                <div class="col-md-6">
                     <label for="nome" class="form-label">Nome</label>
                     <input type="text" name="nome" class="form-control" id="nome" value="<%=usuario.getNome()%>" >
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label for="data_nasc" class="form-label">Data de Nascimento</label>
-                    <input type="text" name="data_nasc" class="form-control" id="data_nasc" value="<%=usuario.getDataNasc()%>" >
+                    <input type="date" name="data_nasc" class="form-control" id="data_nasc" value="<%=usuario.getDataNasc()%>" >
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label for="sexo" class="form-label">Sexo</label>
                     <select name="sexo" class="form-control" id="sexo" aria-label="Default select example" >
-                        <option value="" selected>Todas</option>
                         <option <%=tipoSexo != null && tipoSexo.equals(tipoSexo.M)? "selected" : null %>  value="M">Masculino</option>
                         <option <%=tipoSexo != null && tipoSexo.equals(tipoSexo.F)? "selected" : null %>  value="F">Feminino</option>
                     </select>
                 </div>
 
-                <div class="form-group col-md-9">
+                <div class="form-group col-md-6">
                     <label for="logradouro" class="form-label">Logradouro</label>
                     <input type="text" name="logradouro" class="form-control" id="logradouro" value="<%=usuario.getLogradouro()%>">
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
                     <label for="numero" class="form-label">Número</label>
                     <input type="text" name="numero" class="form-control" id="numero" value="<%=usuario.getNumero()%>" >
                 </div>
@@ -61,11 +60,11 @@
                     <label for="setor" class="form-label">Setor</label>
                     <input type="text" name="setor" class="form-control" id="setor" value="<%=usuario.getSetor()%>" >
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-6">
                     <label for="cidade" class="form-label">Cidade</label>
                     <input type="text" name="cidade" class="form-control" id="cidade" value="<%=usuario.getCidade()%>" >
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-6">
                     <label for="uf" class="form-label">Estado</label>
                     <select name="uf" class="form-select"  id="uf" aria-label="Default select example">
                         <option selected>Selecione</option>
@@ -96,12 +95,12 @@
                         <option value="SP" <%=usuario.getUf() != null && usuario.getUf().equals("SP")? "selected" : null %>>São Paulo</option>
                         <option value="SE" <%=usuario.getUf() != null && usuario.getUf().equals("SE")? "selected" : null %>>Sergipe</option>
                         <option value="TO" <%=usuario.getUf() != null && usuario.getUf().equals("TO")? "selected" : null %>>Tocantins</option>
-                        <option value="99" <%=usuario.getUf() != null && usuario.getUf().equals("99")? "selected" : null %>>Estrangeiro</option>
+                        <option value="99" <%=usuario.getUf() != null && usuario.getUf().equals("99")? "selected" : null %>>99-Estrangeiro</option>
                     </select>
                 </div>
 
                 <div class="col-md-12">
-                    <button type="submit" class="btn btn-primary">Cadastrar</button>
+                    <button type="submit" class="btn btn-primary">Editar</button>
                 </div>
             </form>
         </div>
